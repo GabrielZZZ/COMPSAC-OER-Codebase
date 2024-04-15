@@ -1,0 +1,423 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to Scenario Generation System</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f3f3f3;
+      }
+
+      .header {
+        background-color: #3498db;
+        color: #fff;
+        text-align: center;
+        padding: 2rem 0;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem;
+        background-color: #fff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .container img {
+        width: 100%; /* Set the image width to 100% of the container's width */
+        height: auto; /* Maintain the image's aspect ratio */
+      }
+
+      h2 {
+        font-size: 1.8rem;
+        margin-top: 1.5rem;
+      }
+
+      p {
+        font-size: 1.2rem;
+        line-height: 1.5;
+      }
+
+      ol {
+        font-size: 1.2rem;
+      }
+
+      /* Style for general links */
+
+
+      /* Specific style for buttons */
+      .button {
+        display: block;
+        text-align: center;
+        font-size: 1.2rem;
+        margin-top: 2rem;
+        background-color: #3498db;
+        color: #fff;
+        padding: 1rem 2rem;
+      }
+
+      .button:hover {
+        background-color: #217dbb;
+      }
+
+      .scenario-content span {
+        display: inline; /* ensures inline display */
+      }
+
+      .footer {
+        text-align: center;
+        font-size: 0.8rem;
+        color: #777;
+        padding: 1rem 0;
+        background-color: #f3f3f3;
+      }
+    </style>
+
+    <script>
+      function styleScenario(scenarioParts) {
+        const styledParts = scenarioParts.map((part) => {
+          switch (part.type) {
+            case "prefix":
+              return `<p><span style="color: grey;">${part.text}</span>`;
+            case "actor-init":
+              return `<span style="background-color: yellow; font-weight: bold;">${part.text}</span>`;
+            case "actor-behavior":
+              return `<span style="text-decoration: underline; color: green;">${part.text}</span>`;
+            case "special-info":
+              return `<span style="font-style: italic; color: red;">${part.text}</span>`;
+            case "scenario-outcome":
+              return `<span style="color: blue;">${part.text}</span></p>`;
+            default:
+              return part.text;
+          }
+        });
+
+        return styledParts.join(" ");
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const scenarioParts = [
+          { type: "prefix", text: "In the source scenario," },
+          {
+            type: "actor-init",
+            text: "spawn the EGO vehicle and a front vehicle V1 on a straight road.",
+          },
+          {
+            type: "actor-behavior",
+            text: "Both vehicles drive along the road at a constant speed.",
+          },
+          {
+            type: "special-info",
+            text: "When the front vehicle V1 slows down,",
+          },
+          {
+            type: "scenario-outcome",
+            text: "the EGO vehicle slows down accordingly.",
+          },
+        ];
+        document.getElementById("scenario-output").innerHTML =
+          styleScenario(scenarioParts);
+
+        const scenarioParts2 = [
+          { type: "prefix", text: "In the source scenario," },
+          {
+            type: "actor-init",
+            text: "spawn the EGO vehicle near a junction. Spawn another cyclist near the path of the EGO vehicle. ",
+          },
+          {
+            type: "actor-behavior",
+            text: "After the EGO vehicle turns right a corner,",
+          },
+          {
+            type: "special-info",
+            text: "), make the cyclist suddenly cross the road, ",
+          },
+          {
+            type: "scenario-outcome",
+            text: "The EGO vehicle stops to wait until it leaves the road.",
+          },
+        ];
+
+        document.getElementById("scenario-output2").innerHTML =
+          styleScenario(scenarioParts2);
+
+        const scenarioParts3 = [
+          { type: "prefix", text: "In the source scenario," },
+          {
+            type: "actor-init",
+            text: "spawn the EGO vehicle near the target parking slot. ",
+          },
+          {
+            type: "actor-behavior",
+            text: "The EGO vehicle tries to park in the target slot. ",
+          },
+          {
+            type: "special-info",
+            text: "Both the EGO vehicle and the target parking slot are 90 degrees to the road. ",
+          },
+          {
+            type: "scenario-outcome",
+            text: "Triggering the Autoparking mode. The EGO can park in the parking slot.",
+          },
+        ];
+
+        document.getElementById("scenario-output3").innerHTML =
+          styleScenario(scenarioParts3);
+
+        const scenarioParts4 = [
+          { type: "prefix", text: "In the source scenario," },
+          {
+            type: "actor-init",
+            text: "spawn the EGO vehicle near a parking slot with four poles at the corner. ",
+          },
+          {
+            type: "actor-behavior",
+            text: "The EGO vehicle is trying to park into the parking slot. ",
+          },
+          {
+            type: "special-info",
+            text: "The available size in the parking slot is smaller than the EGO vehicle size. ",
+          },
+          {
+            type: "scenario-outcome",
+            text: "As a result, the EGO vehicle can not park in the parking slot. ",
+          },
+        ];
+
+        document.getElementById("scenario-output4").innerHTML =
+          styleScenario(scenarioParts4);
+
+        const scenarioParts5 = [
+          { type: "prefix", text: "In the source scenario," },
+          {
+            type: "actor-init",
+            text: "spawn the EGO vehicle on a straight road.",
+          },
+          {
+            type: "actor-behavior",
+            text: "The EGO vehicle drives along the road.",
+          },
+          {
+            type: "special-info",
+            text: "Make the EGO vehicle accelerate for 3 seconds, then brake for 2 seconds. The throttle and brake have been pushed to the limit during each phase.",
+          },
+          {
+            type: "scenario-outcome",
+            text: "The EGO vehicle ultimately comes to a full stop.",
+          },
+        ];
+
+        document.getElementById("scenario-output5").innerHTML =
+          styleScenario(scenarioParts5);
+      });
+    </script>
+  </head>
+
+  <body>
+    <header class="header">
+      <h1>Metamorphic Testing Expert System</h1>
+    </header>
+    <div class="container">
+      <h1>Basic Structure of Scenario</h1>
+
+      <img
+        src="{% static 'admin/img/standardScenario.png' %}"
+        alt="Page Structure"
+        class="responsive-image"
+      />
+      <p>{{ welcome_message }}</p>
+
+      <h2>Prefix</h2>
+      <p>
+        Prefixes are used like labels to describe different types of test
+        scenarios. These scenarios help in simulating different situations an
+        autonomous car might face.
+      </p>
+
+      <h3>Main Types of Scenarios</h3>
+      <ul>
+        <li>
+          <strong>"In the Source Test Case":</strong> This is the initial
+          driving scenario, like how an autonomous car reacts to a stop sign.
+        </li>
+        <li>
+          <strong>"In the Follow-up Case":</strong> These scenarios evolve from
+          the source case, such as what happens if the stop sign is partially
+          hidden.
+        </li>
+      </ul>
+
+      <h3>Importance of Differentiating Scenarios</h3>
+      <p>
+        It's important to differentiate between these scenarios to analyze how
+        different driving conditions affect the car's behavior.
+      </p>
+
+      <h3>Interchangeability of Scenarios</h3>
+      <p>
+        A follow-up scenario can sometimes become a source scenario in a
+        different test, providing versatility in testing.
+      </p>
+
+      <h2>Scenario Initialization</h2>
+
+      <p>
+        Scenario initialization is a crucial first step in testing, especially
+        for systems like autonomous driving. It involves setting up the test
+        environment and the 'actors' or elements involved in the test.
+      </p>
+
+      <h3>Key Components of Scenario Initialization</h3>
+      <p>There are two critical aspects to setting up a testing scenario:</p>
+      <ul>
+        <li>
+          <strong>Initializing the Actors:</strong> This includes defining all
+          the elements involved in the scenario, such as the vehicle controlled
+          by the Autonomous Driving System (ADS), commonly known as the EGO
+          vehicle, and other entities it may interact with.
+        </li>
+        <li>
+          <strong>Defining the Environment:</strong> This involves detailing the
+          test environment, including specific infrastructure elements like
+          parking areas with poles, which could impact the scenario.
+        </li>
+      </ul>
+
+      <h3>Importance of Comprehensive Setup</h3>
+      <p>
+        A thorough setup is essential for establishing the baseline conditions
+        of the scenario. It ensures that all relevant variables are considered,
+        which is crucial for effective testing.
+      </p>
+
+      <h2>Defining Actors' Behaviors in Scenarios</h2>
+
+      <p>
+        In this component, we describe the initial actions and states of the
+        actors involved in a scenario, like an autonomous driving system. This
+        is crucial for setting the context and understanding the scenario's
+        starting conditions.
+      </p>
+
+      <h3>Example: Ego Vehicle Behavior</h3>
+      <p>
+        A typical example could be an Ego vehicle (the main vehicle controlled
+        by the autonomous system) attempting to park. This description helps to
+        visualize the initial state and actions of the key participants, like
+        the Ego vehicle, in the scenario.
+      </p>
+
+      <h3>Importance of Clear Initial Descriptions</h3>
+      <p>
+        Providing a clear and detailed description of the actors' initial
+        behaviors and positions is essential. It sets the stage for
+        understanding their starting conditions and intentions, which is
+        critical for effective scenario analysis in testing.
+      </p>
+
+      <h2 style="text-decoration: underline">
+        Special Information Impacting Scenario Outcomes
+      </h2>
+
+      <p>
+        This component is dedicated to discussing variables or constraints that
+        significantly influence the outcomes of the scenarios in testing,
+        especially for autonomous driving systems.
+      </p>
+
+      <h3>Example of a Scenario Constraint</h3>
+      <p>
+        An example of such a constraint could be a situation like, "The
+        available space in the parking slot is smaller than the dimensions of
+        the EGO vehicle." This detail is crucial as it introduces a specific
+        challenge to the scenario.
+      </p>
+
+      <h3>Creating Complex Scenarios for Effective Testing</h3>
+      <p>
+        Including these kinds of specific constraints is vital for developing
+        complex scenarios. They are designed to effectively challenge and test
+        the capabilities and limitations of the Autonomous Driving Systems
+        (ADSs), ensuring a thorough evaluation.
+      </p>
+
+      <h2>Scenario Outputs</h2>
+
+      <p>
+        This component is focused on the results or outputs of scenarios. The
+        primary focus is often on the Ego vehicle, which plays a central role in
+        these scenarios.
+      </p>
+
+      <h3>Validating MRs Through Scenario Outputs</h3>
+      <p>
+        It's important to compare the outputs, particularly those of follow-up
+        scenarios, with MRs. This comparison is crucial to validate the
+        effectiveness of the MRs.
+      </p>
+
+      <h3>Diverse Forms of Outputs</h3>
+      <p>
+        Scenario outputs can vary widely. They might include the actions of the
+        Ego vehicle or specific patterns detected by its sensors. As long as
+        these outputs can be compared with MRs, they can take many different
+        forms.
+      </p>
+
+      <h3>Evaluating ADS Adaptability</h3>
+      <p>
+        Outcomes such as "Consequently, the EGO vehicle fails to park in the
+        slot" are significant. They help in assessing the ADS's ability to adapt
+        to unforeseen environmental challenges or limitations.
+      </p>
+
+      <h2>Example Scenarios</h2>
+      <div id="scenario-content">
+        <p>
+          Key: <span style="color: grey">Grey,normal</span>=Prefix;
+          <span style="background-color: yellow; font-weight: bold"
+            >Yellow,bold</span
+          >=Actor Initialization;
+          <span style="text-decoration: underline; color: green"
+            >Green, underline</span
+          >=Actor Behaviors;
+          <span style="font-style: italic; color: red">Red, Italic</span> =
+          Special Information that Affects Outcomes;
+          <span style="color: blue">Blue</span> = Scenario Outcomes.
+        </p>
+      </div>
+      <!-- Container for the processed scenario -->
+      <ol>
+        <li><div id="scenario-output"></div></li>
+        <li><div id="scenario-output2"></div></li>
+        <li><div id="scenario-output3"></div></li>
+        <li><div id="scenario-output4"></div></li>
+        <li><div id="scenario-output5"></div></li>
+      </ol>
+
+      <!-- Links to other components -->
+      {% comment %} <a href="{% url 'choose_scenario' %}" class="button">Choose from Database</a>  {% endcomment %}
+      <a href="{% url 'questions'%}" class="button">Generate Your Scenarios</a>
+      <a href="{% url 'standard_scenario_introduction' %}" class="button"
+        >Back</a
+      >
+    </div>
+
+    <footer class="footer">
+      <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><span property="dct:title">This website</span> by <span property="cc:attributionName">Yifan Zhang</span> is licensed under <a href="http://creativecommons.org/licenses/by-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">Attribution-ShareAlike 4.0 International<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1"></a></p>
+
+      <a href="https://beian.miit.gov.cn/" target="_blank">皖ICP备18019395号</a>
+
+    </footer>
+  </body>
+</html>

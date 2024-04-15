@@ -1,0 +1,270 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Scenario Questions</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+        color: #333;
+        line-height: 1.6;
+      }
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem;
+        background-color: #fff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        text-align: center;
+        padding: 20px 0;
+      }
+      .question-label {
+        display: block;
+        margin: 15px 0 5px;
+        font-weight: bold;
+      }
+      .question-input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box; /* Ensures padding doesn't affect overall width */
+      }
+      .submit-button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 20px;
+      }
+      .submit-button:hover {
+        background-color: #0056b3;
+      }
+
+      .header {
+        background-color: #3498db;
+        color: #fff;
+        text-align: center;
+        padding: 2rem 0;
+      }
+
+      .question-container {
+        display: flex;
+        align-items: center; /* Aligns items vertically in the center */
+        margin: 15px 0; /* Adjust as needed */
+      }
+
+      .question-icon {
+        height: 1.6rem; /* Adjust the height to match your text size */
+        margin-right: 10px; /* Add some spacing between icon and text */
+      }
+
+      .footer {
+        text-align: center;
+        font-size: 0.8rem;
+        color: #777;
+        padding: 1rem 0;
+        background-color: #f3f3f3;
+    }
+    </style>
+    <script>
+      var serverIP = "{{ ip_address }}";
+
+      const prompts = [
+        "Are there any other actors (vehicles/pedestrians) involved in the scenario in addition to the EGO vehicle (default)? Type 'n' if there is only the EGO vehicle in the scenario: ",
+
+        "Where are the actors in the scenario, e.g., on a straight road, near a parking slot?",
+
+        "What initial actions should the actors in the scenario take? (Describe in a complete sentence, e.g., 'EGO vehicle drives along the road.') ",
+
+        "What additional details or constraints may impact the self-driving car's behaviors (in a complete sentence), e.g., 'The front vehicle V1 slows down.'  ",
+
+        "What does the EGO vehicle do after that? E.g., 'EGO vehicle slows down.'",
+      ];
+
+      const iconUrls = [
+        "{% static 'admin/img/head-brains.png' %}", // replace with your actual image URLs
+      ];
+
+      const defaultAnswers = [
+        "a pedestrian",
+        "on a single-lane road",
+        "The EGO vehicle drives along the road, while the pedestrian prepares to cross the street.",
+        "When the EGO vehicle is 3 meters away from the pedestrian, the pedestrian suddenly crosses the street.",
+        "The EGO vehicle triggers emergency braking and stops.",
+      ];
+
+      function createFormFields() {
+        const form = document.getElementById("scenarioForm");
+        prompts.forEach((prompt, index) => {
+          // Create a container div
+          const containerDiv = document.createElement("div");
+          containerDiv.className = "question-container";
+
+          // Create an image element
+          const img = document.createElement("img");
+          img.src = iconUrls[0];
+          img.className = "question-icon";
+          img.alt = "Icon for question " + (index + 1);
+
+          const label = document.createElement("label");
+          label.className = "question-label";
+          label.textContent = prompt;
+          label.setAttribute("for", "response" + index);
+
+          const input = document.createElement("input");
+          input.className = "question-input";
+          input.setAttribute("type", "text");
+          input.setAttribute("id", "response" + index);
+          input.setAttribute("name", "response" + index);
+
+          // Set default value
+          input.value = defaultAnswers[index];
+
+          // Append image and label to the container
+          containerDiv.appendChild(img);
+          containerDiv.appendChild(label);
+
+          // Append container and input to the form
+          form.appendChild(containerDiv);
+          form.appendChild(input);
+        });
+      }
+
+      function replaceCaseInsensitive(stringToReplace, paragraph) {
+        const pattern = new RegExp(stringToReplace, "gi"); // 'gi' for global, case-insensitive
+        return paragraph.replace(pattern, stringToReplace);
+      }
+
+      function validateForm() {
+        let isValid = true;
+        const inputs = document.querySelectorAll(".question-input");
+        inputs.forEach((input) => {
+          if (input.value.trim() === "") {
+            isValid = false;
+            input.style.borderColor = "red"; // Optional: highlight empty fields
+          } else {
+            input.style.borderColor = ""; // Reset border color if filled
+          }
+        });
+
+        if (!isValid) {
+          alert("Please fill in all the fields.");
+        }
+        return isValid;
+      }
+
+      function submitQuestions(event) {
+        event.preventDefault();
+
+        if (!validateForm()) {
+          return; // Stop the function if validation fails
+        }
+
+        const formData = new FormData(document.getElementById("scenarioForm"));
+
+        // Initialize variables for each part of the scenario
+        let scenario_prefix = "In the source scenario, ";
+        let scenario_initialization = "spawn the EGO vehicle ";
+        let scenario_actor_behaviors = "";
+        let scenario_specifial_info = "";
+        let scenario_outcomes = "";
+
+        // Process form data
+        formData.forEach((value, key) => {
+          if (key === "response0") {
+            // Actors
+            if (value.trim().toLowerCase() !== "n") {
+              scenario_initialization += "and " + value.trim() + " ";
+            }
+          } else if (key === "response1") {
+            // Environment
+            scenario_initialization += value.trim() + ". ";
+          } else if (key === "response2") {
+            // Actor Behaviors
+            scenario_actor_behaviors = value.trim() + " ";
+          } else if (key === "response3") {
+            // Special Information
+            scenario_specifial_info = value.trim() + " ";
+          } else if (key === "response4") {
+            // Outcomes
+            scenario_outcomes = value.trim();
+          }
+        });
+
+        // Combine components into a complete scenario
+        const scenario_complete = [
+          scenario_prefix,
+          scenario_initialization,
+          scenario_actor_behaviors,
+          scenario_specifial_info,
+          scenario_outcomes,
+        ];
+
+        // Store the scenario data
+        sessionStorage.setItem(
+          "generateScenariosData",
+          JSON.stringify(scenario_complete)
+        );
+
+        // Format the user answer
+        scenario_complete.forEach((sentence, index) => {
+          scenario_complete[index] = replaceCaseInsensitive(
+            "EGO vehicle",
+            sentence
+          );
+        });
+
+        fetch(serverIP + "/generate_mrs", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ data: scenario_complete }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            // Store the data in session storage
+            sessionStorage.setItem("generateMRData", JSON.stringify(data));
+
+            // Redirect to the results page
+            // window.location.href = '/results';
+            window.location.href = "/scenario_resultPage";
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+
+      window.onload = createFormFields;
+    </script>
+  </head>
+  <body>
+    <header class="header">
+      <h1>Enter Scenario Information</h1>
+    </header>
+
+    <div class="container">
+      <form id="scenarioForm" onsubmit="submitQuestions(event)">
+        <!-- Form fields will be added here by JavaScript -->
+
+        <input type="submit" value="Submit" class="submit-button" />
+      </form>
+    </div>
+
+    <footer class="footer">
+      <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><span property="dct:title">This website</span> by <span property="cc:attributionName">Yifan Zhang</span> is licensed under <a href="http://creativecommons.org/licenses/by-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">Attribution-ShareAlike 4.0 International<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1"></a></p>
+
+      <a href="https://beian.miit.gov.cn/" target="_blank">皖ICP备18019395号</a>
+
+  </footer>
+
+  </body>
+</html>

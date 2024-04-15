@@ -1,0 +1,213 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Introduction to Metamorphic Relation Generation</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f3f3f3;
+      }
+
+      .header {
+        background-color: #3498db;
+        color: #fff;
+        text-align: center;
+        padding: 2rem 0;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem;
+        background-color: #fff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .container img {
+        width: 70%; /* Set the image width to 100% of the container's width */
+        height: auto; /* Maintain the image's aspect ratio */
+      }
+
+      h2 {
+        font-size: 1.8rem;
+        margin-top: 1.5rem;
+      }
+
+      p {
+        font-size: 1.2rem;
+        line-height: 1.5;
+      }
+
+      ol {
+        font-size: 1.2rem;
+      }
+
+      /* Style for general links */
+
+      /* Specific style for buttons */
+      .button {
+        display: block;
+        text-align: center;
+        font-size: 1.2rem;
+        margin-top: 2rem;
+        background-color: #3498db;
+        color: #fff;
+        padding: 1rem 2rem;
+      }
+
+      .button:hover {
+        background-color: #217dbb;
+      }
+
+      .scenario-content span {
+        display: inline; /* ensures inline display */
+      }
+
+      .footer {
+        text-align: center;
+        font-size: 0.8rem;
+        color: #777;
+        padding: 1rem 0;
+        background-color: #f3f3f3;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <h1>Metamorphic Relation Generation Introduction</h1>
+    </header>
+    <div class="container">
+      <p>
+        This guide introduces the concept of Metamorphic Relations (MRs) and
+        outlines the process for generating them. MRs play a crucial role in
+        testing systems by defining input and output relations to generate and
+        evaluate test cases.
+      </p>
+
+      <h2>Understanding Metamorphic Relations</h2>
+      <p>
+        MRs consist of input and output relations. Input relations are used to
+        generate follow-up test cases from a source test case, while output
+        relations evaluate the system's correctness by comparing expected
+        outcomes.
+      </p>
+
+      <h2>Generating Metamorphic Relations</h2>
+      <p>
+        The Figure below shows the abstractions of the relationships among
+        inputs and outputs of the scenarios and MRs. The source input contains
+        the scenario initialization and actor behaviors defined in the template.
+        Since the prefix only marks the scenario type as source or follow-up, it
+        is not included in the equations. Therefore, equation (a) can be seen as
+        the inner logic of a source scenario, where the source input plus
+        special information that affects outcomes will lead to the source output
+        (e.g., cause the EGO vehicle to take certain actions). Equation (b)
+        specifies a typical MR validation process, where the follow-up output
+        minus the source output is compared against the MR output relations. If
+        the equation holds, the MR is not violated, and vice versa. However,
+        since the MR output relations are human-defined, testers can manually
+        define the relation, and then infer the follow-up output. For instance,
+        the MR output relation can be set to be that the follow-up output is the
+        same as the source output. This is a typical MR output relation that has
+        been proven effective in many studies.
+
+        <img
+          src="{% static 'admin/img/MR-structure.png' %}"
+          alt="Page Structure"
+          class="responsive-image"
+        />
+
+        <br />
+        Once the follow-up output is inferred, the follow-up inputs can be
+        inferred through equation (c). The reason why equation (c) holds is that
+        both the source and follow-up scenarios should focus on testing the same
+        aspect of the SUT, such that the comparison of the outputs is meaningful
+        for MR validation. However, the "special information that affects
+        output" in equations (a) and (c) are not necessarily the same, as long
+        as they have the same impact on the output. For instance, it can be "a
+        pedestrian suddenly appears in front of the EGO vehicle" that makes the
+        EGO vehicle trigger emergency braking in the source scenario, and "a
+        cyclist suddenly appears in front of the EGO vehicle" that makes the EGO
+        vehicle trigger the same emergency braking in the follow-up
+        scenario---the only difference being changing the pedestrian to a
+        cyclist. The follow-up inputs are derived by retaining such details and
+        generating variations on the source input. These variations should be
+        distinct from the original, yet adhere to a consistent pattern of
+        alteration. There are many kinds of variations, with each kind linked to
+        unique MR input relations. Once the follow-up inputs are inferred, the
+        MR input relations can be determined by applying equation (d), and then
+        the MR can be confirmed by combining the input and output relations. In
+        summary, the MR generation process can be described as follows: It
+        begins with the identification of metamorphic output relations. This
+        allows the tester to infer the follow-up output based on the known
+        source output. Then the tester uses their understanding of the "special
+        information that affects behaviours" to deduce the follow-up input. This
+        step is similar to reverse engineering, where the effect is known and
+        the cause is sought. Finally, by comparing the source input with the
+        newly deduced follow-up input, the tester can determine the metamorphic
+        input relations.
+      </p>
+
+      <h2>Example of Metamorphic Relation Generation</h2>
+      <p>
+        An example of such an MR generation process could be: assume a source
+        scenario has been set to be below: </p>
+
+
+        <p>
+        In the source scenario, spawn the EGO vehicle behind a front vehicle V1 on a straight road. Both vehicles drive along the road at a constant speed. When the front vehicle V1 suddenly reduces the speed, the EGO vehicle triggers emergency braking and stops before V1.
+        </p>
+        
+        <p>
+        We manually define the MR output
+        relations to be equal, meaning the follow-up scenario output remains the
+        same as the source scenario output (i.e., "the EGO vehicle triggers the
+        emergency braking and stops before the front vehicle V1"). The special
+        information that affects the EGO vehicle's behavior is the event that
+        the front vehicle suddenly stops. To obtain the follow-up input, we need
+        to create variations on the source inputs. For instance, it could be
+        changing the initial speed of the front vehicle to be less than in the
+        source scenario. Then, by comparing and summarising the changes in the
+        inputs of the scenario, the MR input relations can be obtained; for
+        instance, in this case, it is reducing the initial speed of the front
+        vehicle. Finally, the MR can be determined as follows: 
+        
+        <p>
+        <strong>MR_ReduceSpeed:</strong>
+        <br>
+        In the source scenario, spawn the EGO
+        vehicle behind a front vehicle V1 on a straight road. Both vehicles
+        drive along the road at a constant speed. When the front vehicle V1
+        suddenly stops, the EGO vehicle triggers emergency braking and stops
+        before V1.
+        
+        <br>
+        In the follow-up scenarios, reducing the initial
+        speed of the front vehicle V1. Keep the other conditions unchanged. When
+        the front vehicle V1 suddenly reduces speeds, the EGO vehicle triggers
+        the same emergency braking and stops before V1, as in the source
+        scenario.
+        </p>
+      </p>
+
+      <div>
+        <a href="{% url 'results' %}" class="button">Example MRs Generated</a>
+      </div>
+    </div>
+    <footer class="footer">
+      <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><span property="dct:title">This website</span> by <span property="cc:attributionName">Yifan Zhang</span> is licensed under <a href="http://creativecommons.org/licenses/by-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">Attribution-ShareAlike 4.0 International<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1"></a></p>
+
+      <a href="https://beian.miit.gov.cn/" target="_blank">皖ICP备18019395号</a>
+    </footer>
+  </body>
+</html>

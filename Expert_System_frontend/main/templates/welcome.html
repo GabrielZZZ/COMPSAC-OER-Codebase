@@ -1,0 +1,125 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Metamorphic Testing Expert System!</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f3f3;
+        }
+
+        .header {
+            background-color: #3498db;
+            color: #fff;
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        .container {
+            max-width:1000px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .container img {
+            width: 100%; /* Set the image width to 100% of the container's width */
+            height: auto; /* Maintain the image's aspect ratio */
+          }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            font-size: 1.2rem;
+            line-height: 1.5;
+        }
+
+        .highlight {
+            color: #3498db;
+            font-weight: bold;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #777;
+            padding: 1rem 0;
+            background-color: #f3f3f3;
+        }
+
+        /* Specific style for buttons */
+      .button {
+        display: block;
+        text-align: center;
+        font-size: 1.2rem;
+        margin-top: 2rem;
+        background-color: #3498db;
+        color: #fff;
+        padding: 1rem 2rem;
+      }
+
+      .button:hover {
+        background-color: #217dbb;
+      }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Welcome to Metamorphic Testing Expert System!</h1>
+    </header>
+    <div class="container">
+
+        <img
+      src="{% static 'admin/img/welcome-intro.png' %}"
+      alt="Page Structure"
+      class="responsive-image"
+    />
+
+        <p>
+            In the ever-evolving landscape of autonomous driving systems, knowledge is the fuel that drives progress. We are thrilled to be your destination for exploring one of the most innovative and transformative testing methodologies – <span class="highlight">Metamorphic Testing</span>.
+        </p>
+        <p>
+            Our mission is simple yet ambitious: to empower you with the expertise and insights you need to navigate the intricate world of metamorphic testing and its application in the realm of autonomous driving. As you embark on this educational journey with us, you'll discover a wealth of resources, guidance, and tools designed to deepen your understanding of this cutting-edge field.
+        </p>
+        <p>
+            Behind the scenes, our team of experts, academics, and enthusiasts are dedicated to curating the most up-to-date and valuable content for you. From the fundamentals of metamorphic relations to real-world applications in autonomous driving, we've got you covered.
+        </p>
+        <p>
+            But this website is not just about information; it's about fostering a community of learners and practitioners who are passionate about pushing the boundaries of autonomous systems testing. We invite you to engage, share your insights, and collaborate with fellow enthusiasts with our interactive contents.
+        </p>
+        <p>
+            Whether you're a seasoned professional or just beginning to explore this exciting field, <span class="highlight">Metamorphic Testing Expert System</span> is your trusted companion on the journey to mastering Metamorphic Testing. So, dive in, explore, and let your curiosity drive your learning experience.
+        </p>
+        <p>
+            Thank you for joining us on this knowledge expedition. Together, we'll uncover the incredible potential of metamorphic testing in improving the autonomous driving.
+        </p>
+
+        <p style="font-size: small; font-style: italic;">
+            *Note: Some images in this website were generated with the assistance of AI.
+        </p>
+        
+
+
+        <div class="button-container">
+            <a href="{% url 'menu'%}" class="button">Start the Journey!</a>
+        </div>
+        <br>
+        
+    </div>
+    <footer class="footer">
+        <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><span property="dct:title">This website</span> by <span property="cc:attributionName">Yifan Zhang</span> is licensed under <a href="http://creativecommons.org/licenses/by-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">Attribution-ShareAlike 4.0 International<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1"></a></p>
+
+        <a href="https://beian.miit.gov.cn/" target="_blank">皖ICP备18019395号</a>
+    </footer>
+</body>
+</html>

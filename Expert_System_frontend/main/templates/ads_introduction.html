@@ -1,0 +1,122 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to Scenario Generation System</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f3f3f3;
+      }
+
+      .header {
+        background-color: #3498db;
+        color: #fff;
+        text-align: center;
+        padding: 2rem 0;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem;
+        background-color: #fff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .container img {
+        width: 50%; /* Set the image width to 100% of the container's width */
+        height: auto; /* Maintain the image's aspect ratio */
+      }
+
+
+      h2 {
+        font-size: 1.8rem;
+        margin-top: 1.5rem;
+      }
+
+      p {
+        font-size: 1.2rem;
+        line-height: 1.5;
+        white-space: pre-line;
+      }
+
+      ol {
+        margin-left: 2rem;
+        font-size: 1.2rem;
+      }
+
+      /* Style for general links */
+
+      /* Specific style for buttons */
+      .button {
+        display: block;
+        text-align: center;
+        font-size: 1.2rem;
+        margin-top: 2rem;
+        background-color: #3498db;
+        color: #fff;
+        padding: 1rem 2rem;
+      }
+
+      .button:hover {
+        background-color: #217dbb;
+      }
+
+      .footer {
+        text-align: center;
+        font-size: 0.8rem;
+        color: #777;
+        padding: 1rem 0;
+        background-color: #f3f3f3;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <h1>Metamorphic Testing Expert System</h1>
+    </header>
+    <div class="container">
+
+
+      <!-- ADS Introduction -->
+      <h2>Automated Driving Systems Introduction</h2>
+
+      <iframe width="560" height="315" src="https://www.youtube.com/embed/gEy91PGGLR0?si=LmkFjZ2XTLfqcGyH" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+      
+      <p>{{ ads_introduction }}</p>
+
+      
+
+      <img
+      src="{% static 'admin/img/ads-intro.png' %}"
+      alt="Page Structure"
+      class="responsive-image"
+    />
+
+      <!-- Links to other sections -->
+      <a href="{% url 'standard_scenario_introduction' %}" class="button"
+        >What is a standard scenario?</a
+      >
+      <a href="{% url 'instruction' %}" class="button">Back</a>
+    </div>
+
+    <footer class="footer">
+      <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><span property="dct:title">This website</span> by <span property="cc:attributionName">Yifan Zhang</span> is licensed under <a href="http://creativecommons.org/licenses/by-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">Attribution-ShareAlike 4.0 International<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1"></a></p>
+
+      <a href="https://beian.miit.gov.cn/" target="_blank">皖ICP备18019395号</a>
+
+    </footer>
+  </body>
+</html>

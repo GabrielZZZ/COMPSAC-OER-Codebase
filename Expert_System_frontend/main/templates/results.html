@@ -1,0 +1,207 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MRs Results</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f3f3f3;
+      }
+
+      .header {
+        background-color: #3498db;
+        color: #fff;
+        text-align: center;
+        padding: 2rem 0;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem;
+        background-color: #fff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .mrp {
+        margin-bottom: 20px;
+      }
+
+      .mrp h2 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+      }
+
+      .mrp p {
+        font-size: 1.2rem;
+        line-height: 1.5;
+      }
+
+      button {
+        display: block;
+        margin: 20px auto;
+        padding: 10px 20px;
+        font-size: 1.2rem;
+        background-color: #3498db;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #217dbb;
+      }
+
+      .mr-container {
+        display: flex;
+        align-items: center; /* Aligns items horizontally in the center */
+        margin-bottom: 10px; /* Spacing between each MR */
+      }
+
+      .mr-icon {
+        height: 1.6rem; /* Adjust the height as needed */
+        margin-right: 10px; /* Spacing between image and text */
+      }
+
+      .footer {
+        text-align: center;
+        font-size: 0.8rem;
+        color: #777;
+        padding: 1rem 0;
+        background-color: #f3f3f3;
+    }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <h1>MR Results</h1>
+    </header>
+
+    <div class="container">
+      <!-- MRs will be populated here by JavaScript -->
+      <div id="mrs-container"></div>
+
+      <button onclick="downloadMRs()">Save as Text File</button>
+      <button onclick="goToWelcomePage()">Back to Home Page</button>
+    </div>
+
+    <script>
+      let textToSave = "";
+      const imageUrl = "{% static 'admin/img/MR.png' %}"; // Replace with your actual image URL
+
+      // Function to retrieve data from session storage
+      function getGeneratedMRData() {
+        const data = sessionStorage.getItem("generateMRData");
+        if (data) {
+          return JSON.parse(data);
+        }
+        return null;
+      }
+
+      // Function to display the data on the page
+      function displayData() {
+        const returnedMRs = getGeneratedMRData();
+
+        // Check if data exists before using it
+        if (returnedMRs) {
+          const mrsContainer = document.getElementById("mrs-container");
+
+          for (const mrp in returnedMRs.MRs) {
+            if (returnedMRs.MRs.hasOwnProperty(mrp)) {
+              const mrpDiv = document.createElement("div");
+              mrpDiv.className = "mrp";
+              const mrpHeader = document.createElement("h2");
+              mrpHeader.textContent = mrp;
+              //mrpDiv.appendChild(mrpHeader);
+
+              returnedMRs.MRs[mrp].forEach((mr) => {
+                // Create an image element
+                const img = document.createElement("img");
+                img.src = imageUrl;
+                img.className = "mr-icon"; // Add a class for styling
+                img.alt = "MR Icon";
+
+                // Create a paragraph element
+                const mrParagraph = document.createElement("p");
+                mrParagraph.textContent = mr;
+
+                // Create a container div for image and paragraph
+                const mrContainer = document.createElement("div");
+                mrContainer.className = "mr-container";
+
+                // Append image and paragraph to the container
+                mrContainer.appendChild(img);
+                mrContainer.appendChild(mrParagraph);
+
+                // Append the container to the MR div
+                mrpDiv.appendChild(mrContainer);
+              });
+
+              mrsContainer.appendChild(mrpDiv);
+            }
+          }
+
+          prepareMRs();
+        } else {
+          // Handle the case where no data is present
+          alert("No data received");
+        }
+      }
+
+      // Call the displayData function when the page loads
+      window.onload = displayData;
+
+      function prepareMRs() {
+        const mrpElements = document.querySelectorAll(".mrp");
+        const mrElements = document.querySelectorAll(".mr");
+
+        mrpElements.forEach((mrpElement, index) => {
+          textToSave += mrpElement.textContent.trim() + "\n\n";
+          const mrs = mrElements[index].querySelectorAll("p");
+          mrs.forEach((mr) => {
+            textToSave += mr.textContent.trim() + "\n\n";
+          });
+          textToSave += "\n"; // Extra newline for spacing between MRPs
+        });
+      }
+
+      // Function to download MRs as a text file
+      function downloadMRs() {
+        if (textToSave === "") {
+          alert("MRs cannot be downloaded!");
+          return;
+        }
+
+        const dataStr =
+          "data:text/plain;charset=utf-8," + encodeURIComponent(textToSave);
+        const downloadAnchorNode = document.createElement("a");
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", "MRs.txt");
+        document.body.appendChild(downloadAnchorNode); // Required for Firefox
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+      }
+
+      // Function to go back to the Welcome Page
+      function goToWelcomePage() {
+        window.location.href = "/menu"; // Update with the correct path to your welcome page
+      }
+    </script>
+    <footer class="footer">
+      <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><span property="dct:title">This website</span> by <span property="cc:attributionName">Yifan Zhang</span> is licensed under <a href="http://creativecommons.org/licenses/by-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">Attribution-ShareAlike 4.0 International<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1"></a></p>
+
+      <a href="https://beian.miit.gov.cn/" target="_blank">皖ICP备18019395号</a>
+
+  </footer>
+  </body>
+</html>

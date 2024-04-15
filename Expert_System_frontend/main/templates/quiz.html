@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test your knowledge</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap");
+
+      body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f3f3f3;
+        display: flex;
+        justify-content: center;
+        margin: 0;
+        padding: 0;
+      }
+  
+      .container {
+        max-width: 1000px; /* Adjusted container width */
+        margin: 80px auto; /* Adjusted for top margin and auto for horizontal centering */
+        padding: 20px;
+        background-color: #fff; /* White background for the container */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Slightly heavier shadow for depth */
+        border-radius: 20px; /* Keeping the rounded corners */
+      }
+  
+      h1 {
+        text-align: center;
+        color: #3498db; /* Header text color to match other pages */
+      }
+  
+      .question {
+        font-weight: bold;
+        margin-bottom: 10px;
+      }
+  
+      .options {
+        margin-bottom: 20px;
+      }
+  
+      .option {
+        display: block;
+        margin-bottom: 10px;
+      }
+  
+      .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #3498db; /* Button background color */
+        color: #fff; /* Button text color */
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+        margin-right: 10px;
+      }
+  
+      .button:hover {
+        background-color: #217dbb; /* Darker shade on hover */
+      }
+
+      a.button {
+        text-decoration: none; /* Specifically remove underline from anchor elements with 'button' class */
+        font-size: 16px;
+
+      }
+  
+      .result {
+        text-align: center;
+        margin-top: 20px;
+      }
+  
+      .hide{
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Test Your Knowledge!</h1>
+      <div id="quiz"></div>
+      <div id="result" class="result"></div>
+      <button id="submit" class="button">Submit</button>
+      <button id="retry" class="button hide">Retry</button>
+      <button id="showAnswer" class="button hide">Show Answer</button>
+      <a href="{% url 'welcome' %}" class="button hide" id="goHomeButton">Back</a>
+    </div>
+    <script>
+      const quizData = [
+        {
+          question: "What is the primary focus of Metamorphic Testing in the context of testing self-driving cars?",
+          options: ["Ensuring the car makes perfect decisions in every single scenario.", "Observing the car's behavior when changes are made, based on predefined rules.", "Testing the car's ability to navigate only in busy city streets.", "Checking the mechanical functions of the car, such as engine performance and brake systems."],
+          answer: "Observing the car's behavior when changes are made, based on predefined rules.",
+        },
+        {
+          question: "What is the main purpose of Metamorphic Relation (MR) generation in software testing?",
+          options: ["To ensure the software performs well under heavy load.", "To focus solely on the user interface design of the software.", "To create special rules that guide the testing process in a structured and efficient way.", "To replace traditional testing methods entirely."],
+          answer: "To create special rules that guide the testing process in a structured and efficient way.",
+        },
+        {
+          question: "What is one of the primary advantages of autonomous driving technology?",
+          options: ["It requires constant human intervention to operate safely.", "It can only function in perfect weather conditions.", "It can potentially reduce accidents caused by human error.", "It eliminates the need for traffic lights and road signs."],
+          answer: "It can potentially reduce accidents caused by human error.",
+        },
+        {
+          question: "Why is it important to test autonomous vehicles (AVs) in a variety of scenarios?",
+          options: ["To assess the AV's ability to handle diverse and unexpected driving conditions safely.", "To ensure the vehicles can only operate in controlled environments.", "To make driving more challenging and unpredictable for the AV.", "To limit the AV's functionality to specific weather conditions only."],
+          answer: "To assess the AV's ability to handle diverse and unexpected driving conditions safely.",
+        },
+        {
+          question: "Why is scenario initialization considered a crucial first step in testing autonomous driving systems (ADS)?",
+          options: [
+            "It allows the vehicle to navigate without any predefined conditions, making the test more unpredictable.",
+            "It is necessary for determining the maximum speed the autonomous vehicle can reach during the test.",
+            "It involves setting up the test environment and actors, ensuring all relevant variables are considered for effective testing.",
+            "It focuses on the aesthetic aspects of the test environment, such as the visual appeal of the surroundings.",
+          ],
+          answer: "It involves setting up the test environment and actors, ensuring all relevant variables are considered for effective testing.",
+        },
+        {
+          question: "What role do the initial descriptions of actors' behaviors and positions play in autonomous driving system (ADS) testing scenarios?",
+          options: ["They provide a detailed account of the environmental weather conditions during the scenario.", "They determine the financial cost of conducting each test scenario.", "They are used to identify which actors in the scenario are human and which are computer-controlled.", "They set the stage for understanding the starting conditions and intentions, critical for effective scenario analysis."],
+          answer: "They set the stage for understanding the starting conditions and intentions, critical for effective scenario analysis.",
+        },
+        {
+          question: "What is the significance of including specific constraints in the scenarios during autonomous driving system (ADS) testing?",
+          options: [
+            "To simplify the scenarios for easier testing.",
+            "To ensure the ADS operates in a predictable manner without challenges.",
+            "To create complex scenarios that effectively challenge and test the ADS's capabilities and limitations.",
+            "To focus solely on the initial behaviors and positions of the actors without considering environmental challenges.",
+          ],
+          answer: "To create complex scenarios that effectively challenge and test the ADS's capabilities and limitations.",
+        },
+        {
+          question: "What is the first step described in the metamorphic relation (MR) generation process for testing autonomous driving systems?",
+          options: ["Determining the initial speeds of all vehicles involved in the scenario.", "Identifying metamorphic output relations to infer the follow-up output based on the known source output.", "Selecting the type of sensors to be used in the autonomous driving system.", "Finalizing the environmental conditions, such as weather and traffic, for the test scenario."],
+          answer: "Identifying metamorphic output relations to infer the follow-up output based on the known source output.",
+        },
+        {
+          question: "In the MR generation process, how are follow-up inputs derived after inferring the follow-up output?",
+          options: [
+            "By randomly selecting variables to alter from the source scenario without any specific pattern.",
+            "By using a fixed set of input variables for all scenarios to ensure consistency.",
+            "By deducing the follow-up input using special information that affects behaviors, akin to reverse engineering where the effect is known and the cause is sought.",
+            "By consulting with external experts for insights on potential variations.",
+          ],
+          answer: "By deducing the follow-up input using special information that affects behaviors, akin to reverse engineering where the effect is known and the cause is sought.",
+        },
+        {
+          question: "How does the process of MR generation contribute to the validation of autonomous driving systems?",
+          options: ["By ensuring that every possible driving scenario is replicated exactly in the testing environment.", "Through the creation of variations in test inputs based on specific constraints, enabling testers to evaluate the system's response in different yet relevant scenarios.", "By focusing exclusively on scenarios that are unlikely to occur in real-world driving conditions.", "By limiting the testing to scenarios that do not require any changes in inputs or behaviors from the initial test case."],
+          answer: "Through the creation of variations in test inputs based on specific constraints, enabling testers to evaluate the system's response in different yet relevant scenarios.",
+        },
+      ];
+
+      const quizContainer = document.getElementById("quiz");
+      const resultContainer = document.getElementById("result");
+      const submitButton = document.getElementById("submit");
+      const retryButton = document.getElementById("retry");
+      const showAnswerButton = document.getElementById("showAnswer");
+
+      let currentQuestion = 0;
+      let score = 0;
+      let incorrectAnswers = [];
+
+      function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+      }
+
+      function displayQuestion() {
+        const questionData = quizData[currentQuestion];
+
+        const questionElement = document.createElement("div");
+        questionElement.className = "question";
+        questionElement.innerHTML = questionData.question;
+
+        const optionsElement = document.createElement("div");
+        optionsElement.className = "options";
+
+        const shuffledOptions = [...questionData.options];
+        shuffleArray(shuffledOptions);
+
+        for (let i = 0; i < shuffledOptions.length; i++) {
+          const option = document.createElement("label");
+          option.className = "option";
+
+          const radio = document.createElement("input");
+          radio.type = "radio";
+          radio.name = "quiz";
+          radio.value = shuffledOptions[i];
+
+          const optionText = document.createTextNode(shuffledOptions[i]);
+
+          option.appendChild(radio);
+          option.appendChild(optionText);
+          optionsElement.appendChild(option);
+        }
+
+        quizContainer.innerHTML = "";
+        quizContainer.appendChild(questionElement);
+        quizContainer.appendChild(optionsElement);
+      }
+
+      function checkAnswer() {
+        const selectedOption = document.querySelector(
+          'input[name="quiz"]:checked'
+        );
+        if (selectedOption) {
+          const answer = selectedOption.value;
+          if (answer === quizData[currentQuestion].answer) {
+            score++;
+          } else {
+            incorrectAnswers.push({
+              question: quizData[currentQuestion].question,
+              incorrectAnswer: answer,
+              correctAnswer: quizData[currentQuestion].answer,
+            });
+          }
+          currentQuestion++;
+          selectedOption.checked = false;
+          if (currentQuestion < quizData.length) {
+            displayQuestion();
+          } else {
+            displayResult();
+          }
+        }
+      }
+
+      function displayResult() {
+        quizContainer.style.display = "none";
+        submitButton.style.display = "none";
+        retryButton.style.display = "inline-block";
+        showAnswerButton.style.display = "inline-block";
+        document.getElementById('goHomeButton').classList.remove('hide'); // Show the Go to Home button
+        resultContainer.innerHTML = `You scored ${score} out of ${quizData.length}!`;
+      }
+
+      function retryQuiz() {
+        currentQuestion = 0;
+        score = 0;
+        incorrectAnswers = [];
+        quizContainer.style.display = "block";
+        submitButton.style.display = "inline-block";
+        retryButton.style.display = "none";
+        showAnswerButton.style.display = "none";
+        document.getElementById('goHomeButton').classList.add('hide'); // Optionally hide the Go to Home button
+        resultContainer.innerHTML = "";
+        displayQuestion();
+      }
+
+      function showAnswer() {
+        quizContainer.style.display = "none";
+        submitButton.style.display = "none";
+        retryButton.style.display = "inline-block";
+        showAnswerButton.style.display = "none";
+
+        let incorrectAnswersHtml = "";
+        for (let i = 0; i < incorrectAnswers.length; i++) {
+          incorrectAnswersHtml += `
+          <p>
+            <strong>Question:</strong> <span>${incorrectAnswers[i].question}</span><br>
+            <strong>Your Answer:</strong> <span>${incorrectAnswers[i].incorrectAnswer}</span><br>
+            <strong>Correct Answer:</strong> <span>${incorrectAnswers[i].correctAnswer}</span>
+          </p>
+    `;
+        }
+
+        resultContainer.innerHTML = `
+    <p>You scored ${score} out of ${quizData.length}!</p>
+    <p>Incorrect Answers:</p>
+    ${incorrectAnswersHtml}
+  `;
+      }
+
+      submitButton.addEventListener("click", checkAnswer);
+      retryButton.addEventListener("click", retryQuiz);
+      showAnswerButton.addEventListener("click", showAnswer);
+
+      displayQuestion();
+
+      // JavaScript functions and event listeners...
+    </script>
+  </body>
+</html>
